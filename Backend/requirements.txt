@@ -1,0 +1,11 @@
+flask
+psycopg2
+traceback
+os
+dotenv
+flask_mail
+flask_cors
+flask_jwt_extended
+datetime
+functools
+json

@@ -163,27 +163,28 @@ def login():
         return jsonify({"error": str(e)}), 500
 
 #reset_password
-@app.route("/employee/reset_password", methods=["GET", "POST"])
+@app.route("/reset_password", methods=[ "POST"])
 def reset_password():
-    if request.method == "POST":
-        email = request.form.get("email", "").strip().lower()
-        old_password = request.form.get("old_password", "").strip()
-        new_password = request.form.get("new_password", "").strip()
+    try:
+        data = request.get_json()
+        email = data.get("email", "").strip().lower()
+        old_password = data.get("currentPassword", "").strip()
+        new_password = data.get("newPassword", "").strip()
+        
 
         if not email or not old_password or not new_password:
-            flash("Email and password are required.", "error")
-            return redirect(url_for("reset_password"))
+           return jsonify({"status": "error", "message": "Missing required fields"}), 400
         
-        try:
-            cur.execute("SELECT set_emp_password(%s,%s,%s);", (email, old_password, new_password))
-            conn.commit()
-            flash("Password reset successfully!", "success")
-            return redirect(url_for("login"))
-        except Exception as e:
-            conn.rollback()
-            flash(f"Error: {str(e)}", "error")
-            return redirect(url_for("reset_password"))
-    return render_template("reset_password.html")
+        
+        cur.execute("SELECT set_emp_password(%s,%s,%s);", (email, old_password, new_password))
+        conn.commit()
+        return jsonify({"status": "success", "message": "Password updated successfully"}), 200
+            
+    except Exception as e:
+        conn.rollback()
+        flash(f"Error: {str(e)}", "error")
+        return jsonify({"status": "error", "message": str(e)}), 500
+    
 
 #forgot password
 
@@ -412,6 +413,95 @@ def save_attendance():
     except Exception as e:
         conn.rollback()
         return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/managers",methods=["GET"])
+def display_managers():
+    
+    cur.execute("SELECT id,name FROM employees WHERE role = 'Manager';")
+    managers = cur.fetchall()
+    cur.close()
+    manager_list = [{"id":m[0],"name":m[1]} for m in managers]
+
+    return jsonify({"managers": manager_list})
+
+@app.route("/hrs",methods=["GET"])
+def display_hrs():
+    cur.execute("select id,name from employees where role='HR';")
+    hrs=cur.fetchall()
+    cur.close()
+    hr_list=[{"id":h[0],"name":h[1]} for h in hrs]
+    return jsonify({"HRs":hr_list})
+
+@app.route("/employees",methods=["GET"])
+def display_emps():
+    cur.execute("""SELECT
+    e.id AS "employeeId",
+    e.name,
+    e.email,
+    e.role,
+    ARRAY_REMOVE(ARRAY[
+        m1.name,
+        m2.name
+    ], NULL) AS hr,
+    ARRAY_REMOVE(ARRAY[
+        mgr1.name,
+        mgr2.name,
+        mgr3.name
+    ], NULL) AS managers
+FROM employees e
+LEFT JOIN employee_master em ON e.id = em.emp_id
+LEFT JOIN employees m1 ON em.hr1_id = m1.id
+LEFT JOIN employees m2 ON em.hr2_id = m2.id
+LEFT JOIN employees mgr1 ON em.manager1_id = mgr1.id
+LEFT JOIN employees mgr2 ON em.manager2_id = mgr2.id
+LEFT JOIN employees mgr3 ON em.manager3_id = mgr3.id;
+""")
+    emps=cur.fetchall()
+    cur.close()
+    employees = []
+    for row in emps:
+        employees.append({
+            "employeeId": row[0],
+            "name": row[1],
+            "email": row[2],
+            "role": row[3],
+            "hr": row[4],
+            "managers": row[5]
+        })
+
+    return jsonify(employees)
+
+
+@app.route("/assign",methods=["POST"])
+def assign():
+    try:
+        data=request.get_json()
+        emp_id=data.get("id")
+        manager1_id=data.get("manager1_id")
+        manager2_id=data.get("manager2_id")
+        manager3_id=data.get("manager3_id")
+        hr1_id=data.get("hr1_id")
+        hr2_id=data.get("hr2_id")
+        if not(emp_id and manager1_id and hr1_id):
+            return jsonify({"status":"error","message":"missing data"}),400
+        
+        cur.execute(
+            "select save_employee_master(%s,%s,%s,%s,%s,%s);",
+            (emp_id,manager1_id,hr1_id,manager2_id,manager3_id,hr2_id),
+        )
+        conn.commit()
+        
+        return jsonify({"status":"success","message":"Assigned successfully"}),200
+
+    except Exception as e:
+        conn.rollback()
+        import traceback; traceback.print_exc()
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+    
+    
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
