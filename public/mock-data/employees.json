@@ -1,26 +1,26 @@
 [
   {
-    "employeeId": 1,
-    "name": "Alice Johnson",
-    "email": "alice.johnson@example.com",
+    "_id": "123",
+    "name": "Ravi Kumar",
+    "email": "ravi@example.com",
     "role": "Software Engineer",
-    "hr": [],
-    "managers": []
-  },
-  {
-    "employeeId": 2,
-    "name": "Bob Smith",
-    "email": "bob.smith@example.com",
-    "role": "QA Tester",
-    "hr": [],
-    "managers": []
-  },
-  {
-    "employeeId": 3,
-    "name": "Charlie Brown",
-    "email": "charlie.brown@example.com",
-    "role": "Product Manager",
-    "hr": ["Aditi Mehta"],
-    "managers": []
+    "documents": {
+      "resume": true,
+      "offerLetter": false,
+      "compensation": true,
+      "experience": false,
+      "payslips": false,
+      "form16": false,
+      "ssc": true,
+      "hsc": false,
+      "hscMark": false,
+      "gradMark": false,
+      "latestGrad": true,
+      "pgMark": false,
+      "pgCert": false,
+      "aadhar": true,
+      "pan": true,
+      "passport": false
+    }
   }
 ]

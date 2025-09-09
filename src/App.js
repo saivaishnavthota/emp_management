@@ -14,6 +14,8 @@ import Profile from "./Employee/Components/Profile";
 import UpdatePassword from "./Employee/Components/UpdatePassword";
 import Dashex from "./Employee/Components/Dashex";
 import CreateEmployee from "./HR/Components/CreateEmployee";
+import EmployeeDetails from "./OnboardingEmployee/EmployeeDetails";
+import OnboardingDocs from "./HR/Components/OnboardingDocs";
 function App() {
   return (
   //  <Routes>
@@ -46,8 +48,8 @@ function App() {
   //       }
   //     />
   //   </Routes> 
-   <Dashex/>
-  // // <UpdatePassword/>
+  //  <OnboardingDocs/>
+  <Dashex/>
   // 
 
      );

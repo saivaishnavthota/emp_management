@@ -1,151 +1,161 @@
-body, html, #root {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: Arial, sans-serif;
-}
-
+/* General Layout */
 .dashboard {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  font-family: Arial, sans-serif;
 }
 
 /* Header */
 .header {
+  height: 70px;
+  background-color: #fff;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: #4ade80; /* green */
-  padding: 10px 20px;
-  font-weight: bold;
+  padding: 0 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 100;
+  width: 100%;
 }
 
-.toggle-btn {
-  border: none;
-  background: white;
-  border-radius: 50%;
-  padding: 8px;
+.logo {
+  display: flex;
+  align-items: center;
   cursor: pointer;
-  font-size: 18px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
-/* Layout */
+.logo-img {
+  height: 50px;
+  margin-right: 10px;
+}
+
+.logo-text {
+  font-size: 20px;
+  color: #333;
+}
+
+/* Main layout */
 .main {
   display: flex;
   flex: 1;
+  position: relative;
 }
 
 /* Sidebar */
 .sidebar {
-  margin-top: 75px;
-  background: #111827;
-  color: white;
-  padding: 20px 10px;
-  transition: width 0.3s ease;
-  overflow: hidden;
-}
-
-.sidebar.open {
-  width: 220px;
+  width: 250px;
+  background-color: #2c3e50;
+  height: calc(100vh - 70px); /* below header */
+  position: fixed; /* fixed sidebar */
+  top: 70px;
+  left: 0;
+  overflow-y: auto;
+  transition: width 0.3s;
+  z-index: 99;
 }
 
 .sidebar.collapsed {
-  width: 60px;
+  width: 80px;
 }
 
-/* Menu Items */
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+}
+
 .menu-item {
   position: relative;
-  margin: 50px 10px;
+  left:-20px;
+  margin-top: 10px;
 }
 
-.menu-item a {
+.menu-link {
   display: flex;
   align-items: center;
-  color: white;
+  padding: 12px 20px;
+  color: #fff;
   text-decoration: none;
+  font-size: 15px;
+}
+
+.menu-link:hover {
+  background-color: #1a252f;
 }
 
 .menu-icon {
-  margin-right: 12px;
-  font-size: 18px;
+  margin-right: 10px;
+  min-width: 20px;
 }
 
-.menu-text {
-  font-size: 14px;
-}
-
-/* Tooltip for collapsed menu */
 .tooltip {
   position: absolute;
-  left: 70px;
+  left: 65px;
   top: 50%;
   transform: translateY(-50%);
-  background: black;
-  color: white;
-  font-size: 12px;
+  background: #1a252f;
+  color: #fff;
   padding: 4px 8px;
   border-radius: 4px;
-  opacity: 0;
-  pointer-events: none;
-  white-space: nowrap;
-  transition: opacity 0.2s;
+  font-size: 12px;
+  display: none;
 }
 
-.menu-item:hover .tooltip {
-  opacity: 1;
+.sidebar.collapsed .tooltip {
+  display: block;
+}
+
+/* Toggle button */
+.toggle-btn {
+  position: fixed;
+  left: 10px;
+  top: 80px;
+  background: #070707;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 101;
+  transition: left 0.3s;
+}
+
+.sidebar.collapsed ~ .toggle-btn {
+  left: 60px;
 }
 
 /* Content */
 .content {
-  flex: 1;
+  margin-left: 250px; /* same as sidebar width */
   padding: 20px;
-  transition: margin-left 0.3s ease;
-}
-.sidebar.open ~ .content { margin-left: 220px; }
-.sidebar.collapsed ~ .content { margin-left: 60px; }
-/* Mobile overlay */
-.mobile-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 100;
+  flex: 1;
+  overflow-y: auto;
+  height: calc(100vh - 70px);
+  transition: margin-left 0.3s;
 }
 
-.mobile-overlay .sidebar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
+.sidebar.collapsed ~ .content {
+  margin-left: 60px;
 }
 
-.close-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 24px;
-  margin-bottom: 20px;
-  cursor: pointer;
-}
-
-/* Responsive rules */
-.desktop-only {
-  display: none;
-}
-
-.mobile-only {
-  display: block;
-}
-
-@media (min-width: 768px) {
-  .desktop-only {
-    display: block;
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    left: -250px;
   }
-  .mobile-only {
-    display: none;
+  .sidebar.open {
+    left: 0;
   }
-}    
+  .sidebar.collapsed {
+    left: -60px;
+  }
 
-.sidebar.mobile-collapsed { width: 60px; position: fixed; top: 0; left: 0; height: 100%; background: #111827; padding: 10px; transition: width 0.3s ease; z-index: 100; }
+  .toggle-btn {
+    left: 10px;
+    top: 80px;
+  }
+
+  .content {
+    margin-left: 0;
+  }
+}
