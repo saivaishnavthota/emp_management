@@ -3,11 +3,11 @@ import React, { useEffect, useState } from "react";
 export default function ManagerEmployees() {
   const [employees, setEmployees] = useState([]);
   const [editRow, setEditRow] = useState(null);
-  const [projectInput, setProjectInput] = useState({}); // store project text for each row
+  const [projectInput, setProjectInput] = useState({}); 
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-  // Fetch employee data from backend
   const fetchEmployees = () => {
-    fetch("/mock-data/employees.json")
+    fetch(`${API_BASE_URL}/employees`)
       .then((res) => res.json())
       .then((data) => setEmployees(data))
       .catch((err) => console.error("Error fetching employees:", err));
@@ -17,7 +17,6 @@ export default function ManagerEmployees() {
     fetchEmployees();
   }, []);
 
-  // Submit new project to backend
   const submitProject = (empId) => {
     const project = projectInput[empId];
     if (!project) return;
@@ -29,9 +28,9 @@ export default function ManagerEmployees() {
     })
       .then((res) => res.json())
       .then(() => {
-        fetchEmployees(); // refresh table
-        setProjectInput((prev) => ({ ...prev, [empId]: "" })); // reset input
-        setEditRow(null); // close edit mode
+        fetchEmployees(); 
+        setProjectInput((prev) => ({ ...prev, [empId]: "" })); 
+        setEditRow(null);
       })
       .catch((err) => console.error("Error submitting project:", err));
   };

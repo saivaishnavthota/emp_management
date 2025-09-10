@@ -42,8 +42,9 @@ export default function EmployeeDetails() {
   const [files, setFiles] = useState({});
   const [previewUrls, setPreviewUrls] = useState({});
   const [openSection, setOpenSection] = useState(null);
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-  // validate required fields
+  
   const isFormValid = () => {
     for (const [, section] of Object.entries(sections)) {
       for (const field of section.fields) {
@@ -55,7 +56,7 @@ export default function EmployeeDetails() {
     return true;
   };
 
-  // Save Draft API
+
   const handleDraft = async () => {
     const formData = new FormData();
     Object.keys(files).forEach((key) => {
@@ -65,7 +66,7 @@ export default function EmployeeDetails() {
     });
 
     try {
-      const response = await fetch("http://localhost:5000/api/draft-upload", {
+      const response = await fetch(`${API_BASE_URL}/employees/draft-upload`, {
         method: "POST",
         body: formData,
       });
@@ -96,7 +97,7 @@ export default function EmployeeDetails() {
     });
 
     try {
-      const response = await fetch("http://localhost:5000/api/submit-upload", {
+      const response = await fetch(`${API_BASE_URL}/upload_document`, {
         method: "POST",
         body: formData,
       });
@@ -112,10 +113,9 @@ export default function EmployeeDetails() {
     }
   };
 
-  // load draft data if available
   useEffect(() => {
     async function fetchData() {
-      const data = {}; // replace with GET API for draft if available
+      const data = {}; 
       setFiles(data);
     }
     fetchData();

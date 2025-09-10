@@ -79,9 +79,10 @@ export default function EmployeeForm() {
   const [editRow, setEditRow] = useState(null);
   const [selectedHR, setSelectedHR] = useState({});
   const [selectedMgr, setSelectedMgr] = useState({});
-
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  
   const fetchEmployees = () => {
-    fetch("/mock-data/employees.json")
+    fetch(`${API_BASE_URL}/employees`)
       .then((res) => res.json())
       .then((data) => setEmployees(data))
       .catch((err) => console.error("Error fetching employees:", err));
@@ -90,12 +91,12 @@ export default function EmployeeForm() {
   useEffect(() => {
     fetchEmployees();
 
-    fetch("/mock-data/managers.json")
+    fetch(`${API_BASE_URL}/managers`)
       .then((res) => res.json())
       .then((data) => setManagersList(data))
       .catch((err) => console.error("Error fetching managers:", err));
 
-    fetch("/mock-data/hr.json")
+    fetch(`${API_BASE_URL}/hrs`)
       .then((res) => res.json())
       .then((data) => setHRList(data))
       .catch((err) => console.error("Error fetching HR:", err));
@@ -109,7 +110,7 @@ export default function EmployeeForm() {
 
     if (hrIds.length > 0) {
       requests.push(
-        fetch(`https://c284c314e7d7.ngrok-free.app/employees/${empId}/hr`, {
+        fetch(`${API_BASE_URL}/employees/${empId}/hr`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ hrIds }),
@@ -119,7 +120,7 @@ export default function EmployeeForm() {
 
     if (mgrIds.length > 0) {
       requests.push(
-        fetch(`https://7af2b81040a6.ngrok-free.app/employees/${empId}/manager`, {
+        fetch(`${API_BASE_URL}/employees/${empId}/manager`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ mgrIds }),

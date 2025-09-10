@@ -5,7 +5,7 @@
 }
 
 .table-scroll {
-  overflow-x: auto; /* horizontal scrollbar if needed */
+  overflow-x: auto; 
   margin-bottom: 15px;
 }
 
@@ -34,7 +34,7 @@
   background-color: #fafafa;
 }
 
-/* Pill styles */
+
 .status-pill {
   display: inline-block;
   padding: 6px 14px;
@@ -47,11 +47,11 @@
 }
 
 .status-pill.uploaded {
-  background: #d4edda; /* light green */
+  background: #d4edda; 
 }
 
 .status-pill.not-uploaded {
-  background: #f8d7da; /* light red */
+  background: #f8d7da;
 }
 
 .summary-pill {
@@ -61,12 +61,11 @@
   font-size: 13px;
   font-weight: 600;
   color: #1a1a1a;
-  background: #f1f1f1; /* light gray */
+  background: #f1f1f1; 
   min-width: 100px;
   text-align: center;
 }
 
-/* Request button */
 .request-btn {
   background: #cce5ff;
   color: #004085;
@@ -83,7 +82,7 @@
   background: #b8daff;
 }
 
-/* Pagination */
+
 .pagination {
   display: flex;
   justify-content: center;

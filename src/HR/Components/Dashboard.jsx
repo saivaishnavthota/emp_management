@@ -1,91 +1,102 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
-import "../Styles/Dashboard.css";
 import Logo from "../../assets/Nxzen-logo.jpg";
+import CreateEmployee from "./CreateEmployee";
 import Employees from "./Employees";
+import EmployeeForm from "./EmployeeForm";
 import OnboardingDocs from "./OnboardingDocs";
 import LeaveManagement from "./LeaveManagement";
-import EmployeeForm from "./EmployeeForm";
-import CreateEmployee from "./CreateEmployee";
-import { Link, useLocation, Routes, Route } from "react-router-dom";
+import UpdatePassword from "../../Employee/Components/UpdatePassword";
+import { Link, Routes, Route, useNavigate } from "react-router-dom";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faCalendarCheck,
+  faPaperPlane,
+  faUpload,
+  faKey,
+  faUser,
+  faUserFriends,
+} from "@fortawesome/free-solid-svg-icons";
 
-export default function EmployeeDashboard() {
-  const location = useLocation();
+import "../Styles/Dashboard.css"
 
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+export default function Dashboard() {
+  const [isOpen, setIsOpen] = useState(true);
+  const navigate = useNavigate();
 
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) setIsOpen(false);
+      else setIsOpen(true);
+    };
 
-  const menuItems = [
-  { name: "CreateEmployee", path: "createemp" },
-  { name: "Employees", path: "employees" },
-  { name: "EmployeesForm", path: "employeesform" },
-  { name: "Onboarding Documents", path: "onboard-docs" },
-  { name: "LeaveManagement", path: "leave-manage" },
-  { name: "Change Password", path: "change-password" },
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+ const menuItems = [
+  { name: "Create Employee", icon: faUser, path: "createemp" },
+  { name: "Employees", icon: faUserFriends, path: "employees" },
+  { name: "EmployeesForm", icon: faCalendarCheck, path: "employeesform" },
+  { name: "Onboarding Documents", icon: faUpload, path: "onboard-docs" },
+  { name: "LeaveManagement", icon: faPaperPlane, path: "leave-manage" },
+  { name: "Change Password", icon: faKey, path: "change-password" },
 ];
+
 
   return (
     <div className="dashboard">
-      {/* Sidebar */}
-      <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-        {menuItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            onClick={() => setSidebarOpen(false)} 
-            className={`sidebar-btn ${
-              location.pathname === item.path ? "active" : ""
-            }`}
-          >
-            {item.name}
-          </Link>
-        ))}
-      </div>
-       <div
-  className={`overlay ${sidebarOpen ? "" : "hidden"}`}
-  onClick={() => setSidebarOpen(false)}
-></div>
-     
-      <div className="main-section">
-       <header className="header">
+      {/* Header */}
+      <header className="header">
+        <div className="logo" onClick={() => navigate("/")}>
+          <img src={Logo} alt="Company Logo" className="logo-img" />
+          <h2 className="logo-text">HR Dashboard</h2>
+        </div>
+      </header>
 
-  <div className="logo">
-    <img src={Logo} alt="Company Logo" className="logo-img" />
-  </div>
+      <div className="main">
+        {/* Toggle Sidebar */}
+        <button
+          className="toggle-btn"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <FontAwesomeIcon icon={isOpen ? faArrowLeft : faArrowRight} />
+        </button>
 
-  <button className="hamburger-btn" onClick={toggleSidebar}>
-    <FontAwesomeIcon icon={sidebarOpen ? faTimes : faBars} />
-  </button>
+        {/* Sidebar */}
+        <aside className={`sidebar ${isOpen ? "open" : "collapsed"}`}>
+          <nav>
+            {menuItems.map((item, idx) => (
+              <div key={idx} className="menu-item">
+                <Link
+                  to={`/${item.path}`}
+                  className="menu-link"
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  <FontAwesomeIcon icon={item.icon} className="menu-icon" />
+                  {isOpen && <span className="menu-text">{item.name}</span>}
+                </Link>
+                {!isOpen && <span className="tooltip">{item.name}</span>}
+              </div>
+            ))}
+          </nav>
+        </aside>
 
-  
-  <div className="profile" onClick={toggleDropdown}>
-    <FontAwesomeIcon icon={faUser} className="profile-icon" />
-    {dropdownOpen && (
-      <div className="profile-menu">
-        <button className="profile-menu-item">View Profile</button>
-        <button className="profile-menu-item">Logout</button>
-      </div>
-    )}
-  </div>
-</header>
-
-
-      <main className="content">
-  <Routes>
+        {/* Content Area */}
+        <main className="content">
+          <Routes>
     <Route index element={<h3>Welcome to HR Dashboard</h3>} />
     <Route path="createemp" element={<CreateEmployee />} />
-    <Route path="employees" element={<Employees />} />
+    {/* <Route path="employees" element={<Employees />} /> */}
     <Route path="employeesform" element={<EmployeeForm />} />
     <Route path="onboard-docs" element={<OnboardingDocs />} />
     <Route path="leave-manage" element={<LeaveManagement />} />
+    <Route path="change-password" element={<UpdatePassword/>}/>
   </Routes>
-</main>
+        </main>
       </div>
     </div>
   );
-} 
-
+}

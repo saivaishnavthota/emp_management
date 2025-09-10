@@ -4,12 +4,14 @@ import "../Styles/OnboardingDocs.css";
 export default function OnboardingDocs() {
   const [employees, setEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 5; // Number of rows per page
+  const rowsPerPage = 5;
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const res = await fetch("/mock-data/employees.json");
+        const res = await fetch(`${API_BASE_URL}/employees`);
         const data = await res.json();
         setEmployees(data);
       } catch (err) {
@@ -21,8 +23,7 @@ export default function OnboardingDocs() {
 
   const handleRequestDocs = async (employeeId) => {
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/request-docs/${employeeId}`,
+      const res = await fetch(`${API_BASE_URL}/show-documents/${employeeId}`,
         { method: "POST" }
       );
       if (res.ok) {
@@ -36,7 +37,7 @@ export default function OnboardingDocs() {
     }
   };
 
-  // Pagination calculations
+ 
   const indexOfLast = currentPage * rowsPerPage;
   const indexOfFirst = indexOfLast - rowsPerPage;
   const currentEmployees = employees.slice(indexOfFirst, indexOfLast);
@@ -110,7 +111,6 @@ export default function OnboardingDocs() {
         </table>
       </div>
 
-      {/* Pagination */}
       <div className="pagination">
         <button onClick={() => goToPage(currentPage - 1)}>◀</button>
         {Array.from({ length: totalPages }, (_, i) => (

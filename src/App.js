@@ -18,39 +18,39 @@ import EmployeeDetails from "./OnboardingEmployee/EmployeeDetails";
 import OnboardingDocs from "./HR/Components/OnboardingDocs";
 function App() {
   return (
-  //  <Routes>
-  //     <Route path="/" element={<EmployeeLogin />} />
+   <Routes>
+      <Route path="/" element={<EmployeeLogin />} />
 
-  //     <Route
-  //       path="/hr-dashboard/*"
-  //       element={
-  //         <PrivateRoute role="HR">
-  //           <Dashboard />
-  //         </PrivateRoute>
-  //       }
-  //     />
+      <Route
+        path="/hr-dashboard/*"
+        element={
+          <PrivateRoute role="HR">
+            <Dashboard />
+          </PrivateRoute>
+        }
+      />
 
-  //     <Route
-  //       path="/manager-dashboard"
-  //       element={
-  //         <PrivateRoute role="Manager">
-  //           <ManagerDashboard />
-  //         </PrivateRoute>
-  //       }
-  //     /> 
+      <Route
+        path="/manager-dashboard"
+        element={
+          <PrivateRoute role="Manager">
+            <ManagerDashboard />
+          </PrivateRoute>
+        }
+      /> 
 
-  //     <Route
-  //       path="/employee-dashboard/*"
-  //       element={
-  //         <PrivateRoute role="Employee">
-  //           <EmployeeDashboard />
-  //         </PrivateRoute>
-  //       }
-  //     />
-  //   </Routes> 
-  //  <OnboardingDocs/>
-  <Dashex/>
-  // 
+      <Route
+        path="/employee-dashboard/*"
+        element={
+          <PrivateRoute role="Employee">
+            <EmployeeDashboard />
+          </PrivateRoute>
+        }
+      />
+    </Routes> 
+ 
+ 
+  
 
      );
 }

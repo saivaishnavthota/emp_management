@@ -1,91 +1,98 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
- import "../Styles/ManagerDashboard.css";
-// import EmployeeAttendence from "./EmployeeAttendence";
-// import EmployeeUploadDocs from "./EmployeeUploadDocs";
-import ManagerEmployees from "./ManagerEmployees";
-import ApplyLeave from "./ManagerApplyLeave";
-import LeaveManagement from "./ManagerLeaveManagement";
 import Logo from "../../assets/Nxzen-logo.jpg";
-import { Link, useLocation, Routes, Route } from "react-router-dom";
+import ManagerEmployees from "./ManagerEmployees";
+import ManagerApplyLeave from "./ManagerApplyLeave";
+import ManagerLeaveManagement from "./ManagerLeaveManagement";
+import { Link, Routes, Route, useNavigate } from "react-router-dom";
+import UpdatePassword from "../../Employee/Components/UpdatePassword";
+import {
+  faArrowLeft,
+  faArrowRight,
+  faCalendarCheck,
+  faPaperPlane,
+  faUpload,
+  faKey,
+  faUser,
+  faUserFriends,
+} from "@fortawesome/free-solid-svg-icons";
+
+import "../Styles/ManagerDashboard.css"
 
 export default function ManagerDashboard() {
-  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(true);
+  const navigate = useNavigate();
 
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) setIsOpen(false);
+      else setIsOpen(true);
+    };
 
-  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  const menuItems = [
-  { name: "Add Attendance", path: "attendance" },
-  { name:  "Employee", path:"employee"},
-  { name: "Apply Leave", path: "apply-leave" },
-  { name: "Leave Management", path: "leave-manage" },
-  { name: "Upload Documents", path: "upload-docs" },
-  { name: "Change Password", path: "change-password" },
+ const menuItems = [
+  { name: "Employees", icon: faUserFriends, path: "employees" },
+  { name: "Apply Leave", icon: faPaperPlane, path: "apply-leave" },
+  { name: "Leave Management", icon: faPaperPlane, path: "leave-manage" },
+  { name: "Change Password", icon: faKey, path: "change-password" },
 ];
+
 
   return (
     <div className="dashboard">
-      
-      <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-        {menuItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            onClick={() => setSidebarOpen(false)} 
-            className={`sidebar-btn ${
-              location.pathname === item.path ? "active" : ""
-            }`}
-          >
-            {item.name}
-          </Link>
-        ))}
-      </div>
-       <div
-  className={`overlay ${sidebarOpen ? "" : "hidden"}`}
-  onClick={() => setSidebarOpen(false)}
-></div>
-      
-      <div className="main-section">
-        <header className="header">
-                  <div className="logo">
-                    <img src={Logo} alt="Company Logo" className="logo-img" />
-                    <h2 className="logo-text">Manager Dashboard</h2>
-                  </div>
-                
-                  <button className="hamburger-btn" onClick={toggleSidebar}>
-                    <FontAwesomeIcon icon={sidebarOpen ? faTimes : faBars} />
-                  </button>
-                    
-                  <div className="profile" onClick={toggleDropdown}>
-                    <FontAwesomeIcon icon={faUser} className="profile-icon" />
-                    {dropdownOpen && (
-                      <div className="profile-menu">
-                        <button className="profile-menu-item">View Profile</button>
-                        <button className="profile-menu-item">Logout</button>
-                      </div>
-                    )}
-                  </div>
-                </header>
+      {/* Header */}
+      <header className="header">
+        <div className="logo" onClick={() => navigate("/")}>
+          <img src={Logo} alt="Company Logo" className="logo-img" />
+          <h2 className="logo-text">Manager Dashboard</h2>
+        </div>
+      </header>
 
+      <div className="main">
+        {/* Toggle Sidebar */}
+        <button
+          className="toggle-btn"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <FontAwesomeIcon icon={isOpen ? faArrowLeft : faArrowRight} />
+        </button>
+
+        {/* Sidebar */}
+        <aside className={`sidebar ${isOpen ? "open" : "collapsed"}`}>
+          <nav>
+            {menuItems.map((item, idx) => (
+              <div key={idx} className="menu-item">
+                <Link
+                  to={`/${item.path}`}
+                  className="menu-link"
+                  onClick={() => window.scrollTo(0, 0)}
+                >
+                  <FontAwesomeIcon icon={item.icon} className="menu-icon" />
+                  {isOpen && <span className="menu-text">{item.name}</span>}
+                </Link>
+                {!isOpen && <span className="tooltip">{item.name}</span>}
+              </div>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Content Area */}
         <main className="content">
-  <Routes>
+         <Routes>
     <Route index element={<h3>Welcome to Manager Dashboard</h3>} />
     {/* <Route path="attendance" element={<EmployeeAttendence />} /> */}
     {/* <Route path="upload-docs" element={<EmployeeUploadDocs />} /> */}
-    <Route path="employee" element={<ManagerEmployees />} />
-    <Route path="apply-leave" element={<ApplyLeave />} />
-    <Route path="leave-manage" element={<LeaveManagement />} />
-    {/* <Route path="change-password" element={<UpdatePassword />} /> */}
+    <Route path="employees" element={<ManagerEmployees />} />
+    <Route path="apply-leave" element={<ManagerApplyLeave />} />
+    <Route path="leave-manage" element={<ManagerLeaveManagement />} />
+    <Route path="change-password" element={<UpdatePassword />} /> 
   </Routes>
-</main>
-
+        </main>
       </div>
     </div>
   );
 }
-
