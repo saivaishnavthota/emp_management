@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaUpload, FaCheckCircle } from "react-icons/fa";
-import "./DocUpload.css";
-
+import "./NewUserDocsUpload.css";
+import { useNavigate } from "react-router-dom"; 
 const acceptedFormats = [".pdf", ".doc", ".docx", ".jpg", ".png"];
 
 const sections = {
@@ -38,11 +38,12 @@ const sections = {
   },
 };
 
-export default function EmployeeDetails() {
+export default function NewUserDocsUpload() {
   const [files, setFiles] = useState({});
   const [previewUrls, setPreviewUrls] = useState({});
   const [openSection, setOpenSection] = useState(null);
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+    const navigate = useNavigate(); 
 
   
   const isFormValid = () => {
@@ -56,11 +57,11 @@ export default function EmployeeDetails() {
     return true;
   };
 
-
+  // ✅ Save Draft
   const handleDraft = async () => {
     const formData = new FormData();
     Object.keys(files).forEach((key) => {
-      if (files[key]) {
+      if (files[key] instanceof File) {
         formData.append(key, files[key]);
       }
     });
@@ -82,45 +83,84 @@ export default function EmployeeDetails() {
     }
   };
 
-  // Submit API
-  const handleSubmit = async () => {
-    if (!isFormValid()) {
-      alert("Please upload all required documents before submitting!");
-      return;
-    }
+  const handleSubmitAll = async () => {
+  const employeeDetails = JSON.parse(localStorage.getItem("employeeDetails"));
 
-    const formData = new FormData();
-    Object.keys(files).forEach((key) => {
-      if (files[key]) {
-        formData.append(key, files[key]);
-      }
+  if (!employeeDetails) {
+    alert("Employee details missing! Please go back and fill the form.");
+    return;
+  }
+
+  if (!isFormValid()) {
+    alert("Please upload all required documents before submitting!");
+    return;
+  }
+
+  const formData = new FormData();
+  // Add employee details
+  Object.keys(employeeDetails).forEach((key) => {
+    formData.append(key, employeeDetails[key]);
+  });
+  // Add uploaded files
+  Object.keys(files).forEach((key) => {
+    if (files[key] instanceof File) {
+      formData.append(key, files[key]);
+    }
+  });
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/employees/complete-registration`, {
+      method: "POST",
+      body: formData,
     });
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/upload_document`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        alert("Documents submitted successfully!");
-      } else {
-        alert("Failed to submit documents.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("Error while submitting documents.");
+    if (response.ok) {
+      alert("Employee registered successfully!");
+      localStorage.removeItem("employeeDetails"); // ✅ clear stored data
+      // redirect after success
+      navigate("/");
+    } else {
+      alert("Failed to submit details and documents.");
     }
-  };
+  } catch (error) {
+    console.error(error);
+    alert("Error while submitting employee registration.");
+  }
+};
 
+  // ✅ Fetch existing docs from server
   useEffect(() => {
     async function fetchData() {
-      const data = {}; 
-      setFiles(data);
-    }
-    fetchData();
-  }, []);
+      try {
+        const response = await fetch(`${API_BASE_URL}/employees/get-uploaded-docs`, {
+          method: "GET",
+          credentials: "include",
+        });
 
+        if (response.ok) {
+          const data = await response.json();
+          const fetchedFiles = {};
+          const fetchedPreviews = {};
+
+          Object.keys(data).forEach((field) => {
+            if (data[field]) {
+              fetchedPreviews[field] = data[field];
+              fetchedFiles[field] = { name: data[field].split("/").pop(), url: data[field] };
+            }
+          });
+
+          setFiles(fetchedFiles);
+          setPreviewUrls(fetchedPreviews);
+        }
+      } catch (err) {
+        console.error("Error fetching uploaded docs:", err);
+      }
+    }
+
+    fetchData();
+  }, [API_BASE_URL]);
+
+  // ✅ Handle file upload
   const handleFileChange = (e, field) => {
     const file = e.target.files[0];
     if (file) {
@@ -129,6 +169,7 @@ export default function EmployeeDetails() {
     }
   };
 
+  // ✅ Count uploaded files
   const getUploadedCount = (section) =>
     section.fields.filter((f) => files[f.name]).length;
 
@@ -136,7 +177,8 @@ export default function EmployeeDetails() {
     <div className="upload-container">
       <div className="upload-box">
         <h4>Documents Upload</h4>
-        <h6 id="text">Please upload the required documents</h6>
+        <h6 id="text"> <span className="required">*</span> marked documents are mandatory to upload</h6>
+
         {Object.entries(sections).map(([key, section]) => (
           <div key={key} className="section">
             <div
@@ -162,6 +204,7 @@ export default function EmployeeDetails() {
                       {field.label}{" "}
                       {field.required && <span className="required">*</span>}
                     </div>
+
                     <div className="upload-status">
                       {files[field.name] ? (
                         <>
@@ -190,7 +233,7 @@ export default function EmployeeDetails() {
                         className="preview-link"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        {files[field.name].name}
+                        {files[field.name].name || "View File"}
                       </a>
                     )}
                   </div>
@@ -204,13 +247,17 @@ export default function EmployeeDetails() {
         ))}
 
         <div className="button-group">
-          <button type="button" className="btn draft" onClick={handleDraft}>
-            Save Draft
-          </button>
-          <button type="button" className="btn submit" onClick={handleSubmit}>
-            Submit
-          </button>
-        </div>
+  <button type="button" className="btn back" onClick={() => navigate("/new-user-form")}>
+    ⬅ Back
+  </button>
+  <button type="button" className="btn draft" onClick={handleDraft}>
+    Save Draft
+  </button>
+  <button type="button" className="btn submit" onClick={handleSubmitAll}>
+    Submit All
+  </button>
+</div>
+
       </div>
     </div>
   );

@@ -56,6 +56,9 @@
   padding: 16px;
   background: #fff;
 }
+ .required {
+  color: red;
+}
 
 .upload-card {
   border: 2px dashed #ccc;

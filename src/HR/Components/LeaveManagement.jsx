@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../Styles/LeaveManagement.css";
 
-export default function HRLeaveManagement() {
+export default function LeaveManagement() {
   const [activeTab, setActiveTab] = useState("pending");
   const [pendingLeaves, setPendingLeaves] = useState([]);
   const [allRequests, setAllRequests] = useState([]);

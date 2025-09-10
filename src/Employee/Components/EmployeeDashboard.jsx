@@ -5,7 +5,7 @@ import EmployeeUploadDocs from "./EmployeeUploadDocs";
 import ApplyLeave from "./ApplyLeave";
 import UpdatePassword from "./UpdatePassword";
 import Logo from "../../assets/Nxzen-logo.jpg"; 
-import EmployeeDetails from "../../OnboardingEmployee/EmployeeDetails";
+import Profile from "./Profile";
 import { Link, Routes, Route, useNavigate } from "react-router-dom";
 import {
   faArrowLeft,
@@ -14,8 +14,10 @@ import {
   faPaperPlane,
   faUpload,
   faKey,
+  faCircleUser 
 } from "@fortawesome/free-solid-svg-icons";
 import "../Styles/EmployeeDashboard.css"
+import NewUserDocsUpload from "../../OnboardingEmployee/NewUserDocsUpload";
 
 export default function EmployeeDashboard() {
   const [isOpen, setIsOpen] = useState(true);
@@ -32,6 +34,17 @@ export default function EmployeeDashboard() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    
+    const storedUser = localStorage.getItem("username");
+    if (storedUser) {
+      setUsername(storedUser);
+    }
+  }, []);
+
+
   const menuItems = [
     { name: "Add Attendance", icon: faCalendarCheck, path: "attendance" },
     { name: "Apply Leave", icon: faPaperPlane, path: "apply-leave" },
@@ -46,6 +59,17 @@ export default function EmployeeDashboard() {
         <div className="logo" onClick={() => navigate("/")}>
           <img src={Logo} alt="Company Logo" className="logo-img" />
           <h2 className="logo-text">Employee Dashboard</h2>
+        </div>
+        <div className="profile"  style={{
+        display: "flex",
+        alignItems: "center",  
+        gap: "8px",
+        height: "100%",   
+      }}>
+           <FontAwesomeIcon icon={faCircleUser} size="2x" />
+             <span>
+            {username || "Guest"}
+            </span>
         </div>
       </header>
 
@@ -81,10 +105,11 @@ export default function EmployeeDashboard() {
         <main className="content">
           <Routes>
             <Route index element={<h3>Welcome to Employee Dashboard</h3>} />
-            <Route path="attendance" element={<EmployeeAttendance />} />
-            <Route path="upload-docs" element={<EmployeeDetails />} />
-            <Route path="apply-leave" element={<ApplyLeave />} />
+            {/* <Route path="attendance" element={<EmployeeAttendance />} /> */}
+            <Route path="upload-docs" element={<NewUserDocsUpload />} />
+            {/* <Route path="apply-leave" element={<ApplyLeave />} /> */}
             <Route path="change-password" element={<UpdatePassword />} />
+            <Route path="profile" element={<Profile />} />
           </Routes>
         </main>
       </div>

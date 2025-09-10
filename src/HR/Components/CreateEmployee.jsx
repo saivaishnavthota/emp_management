@@ -79,7 +79,7 @@ const CreateEmployee = () => {
             </select>
           </div>
 
-          <button type="submit" className="btn btn-primary w-50">
+          <button type="submit" className="btn btn-primary w-50 " >
             Create
           </button>
         </form>

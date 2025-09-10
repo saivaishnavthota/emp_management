@@ -17,9 +17,12 @@ import {
   faKey,
   faUser,
   faUserFriends,
+  faHandPaper,
 } from "@fortawesome/free-solid-svg-icons";
 
 import "../Styles/Dashboard.css"
+import DocumentCollection from "./DocumentCollection";
+import { FaDochub, FaPage4 } from "react-icons/fa";
 
 export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(true);
@@ -39,16 +42,17 @@ export default function Dashboard() {
  const menuItems = [
   { name: "Create Employee", icon: faUser, path: "createemp" },
   { name: "Employees", icon: faUserFriends, path: "employees" },
-  { name: "EmployeesForm", icon: faCalendarCheck, path: "employeesform" },
+  { name: "Employees Form", icon: faCalendarCheck, path: "employeesform" },
   { name: "Onboarding Documents", icon: faUpload, path: "onboard-docs" },
-  { name: "LeaveManagement", icon: faPaperPlane, path: "leave-manage" },
+  { name: "Documents Collection", icon: faHandPaper , path: "collect-docs" },
+  { name: "Leave Management", icon: faPaperPlane, path: "leave-manage" },
   { name: "Change Password", icon: faKey, path: "change-password" },
 ];
 
 
   return (
     <div className="dashboard">
-      {/* Header */}
+      
       <header className="header">
         <div className="logo" onClick={() => navigate("/")}>
           <img src={Logo} alt="Company Logo" className="logo-img" />
@@ -57,7 +61,6 @@ export default function Dashboard() {
       </header>
 
       <div className="main">
-        {/* Toggle Sidebar */}
         <button
           className="toggle-btn"
           onClick={() => setIsOpen(!isOpen)}
@@ -65,7 +68,6 @@ export default function Dashboard() {
           <FontAwesomeIcon icon={isOpen ? faArrowLeft : faArrowRight} />
         </button>
 
-        {/* Sidebar */}
         <aside className={`sidebar ${isOpen ? "open" : "collapsed"}`}>
           <nav>
             {menuItems.map((item, idx) => (
@@ -92,7 +94,8 @@ export default function Dashboard() {
     {/* <Route path="employees" element={<Employees />} /> */}
     <Route path="employeesform" element={<EmployeeForm />} />
     <Route path="onboard-docs" element={<OnboardingDocs />} />
-    <Route path="leave-manage" element={<LeaveManagement />} />
+    <Route path="collect-docs" element={<DocumentCollection />} />
+    {/* <Route path="leave-manage" element={<LeaveManagement />} /> */}
     <Route path="change-password" element={<UpdatePassword/>}/>
   </Routes>
         </main>
