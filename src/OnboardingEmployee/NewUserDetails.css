@@ -3,8 +3,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;   /* full page height */
-  background: #f5f6fa; /* light background */
+  min-height: 100vh;   
+  background: #f5f6fa;
   padding: 2rem;
 }
 

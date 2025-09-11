@@ -106,8 +106,8 @@ export default function EmployeeDashboard() {
           <Routes>
             <Route index element={<h3>Welcome to Employee Dashboard</h3>} />
             {/* <Route path="attendance" element={<EmployeeAttendance />} /> */}
-            <Route path="upload-docs" element={<NewUserDocsUpload />} />
-            {/* <Route path="apply-leave" element={<ApplyLeave />} /> */}
+            <Route path="upload-docs" element={<EmployeeUploadDocs />} />
+            <Route path="apply-leave" element={<ApplyLeave />} />
             <Route path="change-password" element={<UpdatePassword />} />
             <Route path="profile" element={<Profile />} />
           </Routes>

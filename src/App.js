@@ -6,6 +6,8 @@ import ManagerDashboard from "./Manager/Components/ManagerDashboard";
 import EmployeeDashboard from "./Employee/Components/EmployeeDashboard";
 import NewUserDetails from "./OnboardingEmployee/NewUserDetails";
 import NewUserDocsUpload from "./OnboardingEmployee/NewUserDocsUpload";
+import ApplyLeave from "./Employee/Components/ApplyLeave";
+import ManagerApplyLeave from "./Manager/Components/ManagerApplyLeave";
 function App() {
   return (
     <Routes>
@@ -39,8 +41,8 @@ function App() {
           </PrivateRoute>
         }
       />
-  </Routes> 
- 
+  </Routes>
+
   )
 }
 

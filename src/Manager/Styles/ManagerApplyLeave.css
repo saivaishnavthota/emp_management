@@ -4,9 +4,13 @@
 
 .leave-cards-wrapper {
   display: flex;
+  flex-direction: row;
   justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
+   width: 100%;
+  /* Add min-width to prevent stacking on large screens */
+  min-width: 360px;
 }
 
 .leave-card {
@@ -97,5 +101,16 @@
   background-color: #0d6efd;
   border: none;
 }
-
+@media (max-width: 767px) {
+  .leave-cards-wrapper {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+  .leave-card {
+    min-width: 180px;
+    max-width: 220px;
+    flex: 0 0 auto;
+  }
+}
 

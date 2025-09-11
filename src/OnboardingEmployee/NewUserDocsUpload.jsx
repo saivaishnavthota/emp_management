@@ -57,7 +57,7 @@ export default function NewUserDocsUpload() {
     return true;
   };
 
-  // ✅ Save Draft
+ 
   const handleDraft = async () => {
     const formData = new FormData();
     Object.keys(files).forEach((key) => {
@@ -97,11 +97,11 @@ export default function NewUserDocsUpload() {
   }
 
   const formData = new FormData();
-  // Add employee details
+
   Object.keys(employeeDetails).forEach((key) => {
     formData.append(key, employeeDetails[key]);
   });
-  // Add uploaded files
+  
   Object.keys(files).forEach((key) => {
     if (files[key] instanceof File) {
       formData.append(key, files[key]);
@@ -116,8 +116,8 @@ export default function NewUserDocsUpload() {
 
     if (response.ok) {
       alert("Employee registered successfully!");
-      localStorage.removeItem("employeeDetails"); // ✅ clear stored data
-      // redirect after success
+      localStorage.removeItem("employeeDetails"); 
+
       navigate("/");
     } else {
       alert("Failed to submit details and documents.");
@@ -128,7 +128,7 @@ export default function NewUserDocsUpload() {
   }
 };
 
-  // ✅ Fetch existing docs from server
+  
   useEffect(() => {
     async function fetchData() {
       try {
@@ -160,7 +160,7 @@ export default function NewUserDocsUpload() {
     fetchData();
   }, [API_BASE_URL]);
 
-  // ✅ Handle file upload
+ 
   const handleFileChange = (e, field) => {
     const file = e.target.files[0];
     if (file) {
@@ -169,7 +169,7 @@ export default function NewUserDocsUpload() {
     }
   };
 
-  // ✅ Count uploaded files
+
   const getUploadedCount = (section) =>
     section.fields.filter((f) => files[f.name]).length;
 
